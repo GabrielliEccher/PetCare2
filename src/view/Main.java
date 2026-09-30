@@ -2,6 +2,7 @@ package view;
 
 import controller.UsuarioController;
 import model.dao.Usuario;
+import model.dao.Pessoa;
 
 import java.util.Scanner;
 
@@ -14,24 +15,80 @@ public class Main {
 
         System.out.println("1 - Fazer Login \n2 - Criar Conta ");
         int opcao = sc.nextInt();
+        sc.nextLine();
 
         switch (opcao) {
+
+            case 1:
+                if (usuarioController.conectaBD("petcare")) {
+
+                    do {
+                        System.out.println("LOGIN\n");
+
+                        System.out.println("Login (CPF ou E-mail)");
+                        String login = sc.next();
+
+                        System.out.println("Senha ");
+                        String senha = sc.next();
+
+                        Usuario usuarioLogin = new Usuario(login, senha);
+
+                        if (usuarioController.VerificarLogin("usuario", usuarioLogin)) {
+
+                            System.out.println("Login efetuado com sucesso\n");
+                            Usuario usuariologado = new Usuario(login, senha);
+
+                            break;
+
+                        } else {
+                            System.out.println("Login e/ou senha inválido.");
+                        }
+
+                    } while (true);
+
+                    System.out.println("1 - Agendamentos");
+                    System.out.println("2 - Pets ");
+                    System.out.println("3 - Sair ");
+                    int opcaoMenu = sc.nextInt();
+                    sc.nextLine();
+
+                } else {
+                    System.out.println("Erro ao conectar ao banco de dados.");
+                    }
+
             case 2:
 
                 if (usuarioController.conectaBD("petcare")) {
 
                     do {
 
+                        System.out.println("Nome:");
+                        String nome = sc.nextLine();
+
                         System.out.println("CPF: ");
-                        String CPF = sc.next();
+                        String CPF = sc.nextLine();
+
+                        System.out.println("Telefone: ");
+                        String telefone = sc.nextLine();
 
                         System.out.println("Email: ");
-                        String email = sc.next();
+                        String email = sc.nextLine();
+
+                        System.out.println("Endereco: ");
+                        String endereco = sc.nextLine();
+
+                        System.out.println("CEP: ");
+                        String cep = sc.nextLine();
+
+                        System.out.println("Cidade: ");
+                        String cidade = sc.nextLine();
 
                         System.out.println("Senha: ");
-                        String senha = sc.next();
+                        String senha = sc.nextLine();
 
-                        Usuario usuario = new Usuario(CPF, senha, email, 1);
+                        Pessoa pessoa = new Pessoa(nome, CPF, email, telefone, endereco, cidade, cep);
+
+                        Usuario usuario = new Usuario(CPF, senha);
 
 
                         if (usuarioController.VerificarUsuarioExiste("usuario", usuario)) {
@@ -40,7 +97,7 @@ public class Main {
 
                         } else {
 
-                            String NovoUsuario = usuarioController.InserirUsuario("usuario", usuario);
+                            String NovoUsuario = usuarioController.InserirUsuario("usuario", usuario, pessoa);
                             System.out.println(NovoUsuario);
 
                             break;
@@ -50,8 +107,7 @@ public class Main {
                     } while (true);
 
                 } else {
-
-                    System.out.println("Não foi possível estabelecer conexão!");
+                    System.out.println("Erro ao conectar ao banco de dados.");
                 }
 
         }

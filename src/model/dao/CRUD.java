@@ -14,17 +14,31 @@ public class CRUD implements IUsuarioDAO{
 
 //Cadastrar usuário
 
-    public String InserirUsuario(String tabela, Usuario usuario){
-        String SQL = "INSERT INTO usuario (CODIGOPESSOA, LOGIN, SENHA, EMAIL, INDICADORMASTER, INDICADORATIVO) " +
-                "VALUES (NULL, '"+ usuario.getLogin()+ "','"+usuario.getSenha()+ "','"+usuario.getEmail()+ "', 0, 1)";
-        int linhasafetadas = -1;
+    public String InserirUsuario(String tabela, Usuario usuario, Pessoa pessoa){
+        String SQLPessoa = "INSERT INTO pessoa (NOME, EMAIL, CPF, ENDERECO, CEP, TELEFONE, CIDADE, INDICADORATIVO) "+
+                "VALUES ('"+pessoa.getNome()+"', '"+pessoa.getEmail() +"', '"+ pessoa.getCpf()+"','"+pessoa.getEndereco()+"','"+pessoa.getCep()+"','"+pessoa.getTelefone()+"','"+pessoa.getCidade()+"', 1)" +
+                "RETURNING Codigo";
 
         try {
-            linhasafetadas = s.executeUpdate(SQL);
+            ResultSet linhasafetadas = s.executeQuery(SQLPessoa);
+
+            if(linhasafetadas.next()){
+                int codigoPessoa = linhasafetadas.getInt("Codigo");
+
+                String SQLUsuario =
+                        "INSERT INTO Usuario " +
+                                "(CodigoPessoa, Login, Senha, IndicadorAtivo) " +
+                                "VALUES (" + codigoPessoa + ", '" + usuario.getLogin() + "', '" + usuario.getSenha() + "', 1)";
+
+                s.executeUpdate(SQLUsuario);
+
+                return "Usuário cadastrado com sucesso!";
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "Usuário Cadastrado com Sucesso!";
+        return "Não foi possível cadastrar o usuário.";
     }
 
     //Verificar se usuário já não existe
@@ -39,6 +53,43 @@ public class CRUD implements IUsuarioDAO{
         } catch (SQLException e) {
             e.printStackTrace();
         } return  false;
+    }
+
+    //Login
+
+    public boolean VerificarLogin (String tabela, Usuario usuario) {
+        String SQL = "SELECT * FROM USUARIO WHERE LOGIN = '" + usuario.getLogin() + "' AND SENHA = '" + usuario.getSenha() + "'"+ " AND INDICADORATIVO = 1 ";
+
+        try {
+            ResultSet linhasafetadasLogin = s.executeQuery(SQL);
+            return linhasafetadasLogin.next();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+
+    //Usuario Master
+
+    public boolean Usuariomaster (Usuario usuario) {
+        String SQL = "SELECT * FROM USUARIO WHERE LOGIN = '" + usuario.getLogin() + "' AND SENHA = '" + usuario.getSenha() + "'" + "RETURNING IndicadorMaster";
+
+        try {
+            ResultSet linhasafetadas = s.executeQuery(SQL);
+
+            if (linhasafetadas.next()) {
+                int IndicadorMaster = linhasafetadas.getInt("IndicadorMaster");
+
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

@@ -7,10 +7,8 @@ public class Usuario {
     private String email;
     private int IndicadorAtivo;
 
-    public Usuario(String login, String email, String senha,int indicadorAtivo) {
+    public Usuario(String login,String senha) {
         this.login = login;
-        IndicadorAtivo = indicadorAtivo;
-        this.email = email;
         this.senha = senha;
     }
 
