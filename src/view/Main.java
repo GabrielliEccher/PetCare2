@@ -46,11 +46,41 @@ public class Main {
 
                     } while (true);
 
-                    System.out.println("1 - Agendamentos");
-                    System.out.println("2 - Pets ");
-                    System.out.println("3 - Sair ");
-                    int opcaoMenu = sc.nextInt();
-                    sc.nextLine();
+                    int opcaomenu = 0;
+
+                    do {
+
+
+                        System.out.println("1 - Agendamentos");
+                        System.out.println("2 - Pets ");
+                        System.out.println("3 - Sair ");
+                        int opcaoMenu = sc.nextInt();
+                        sc.nextLine();
+
+                        int opcaoAgendamento = 0;
+
+                        do {
+
+
+                            switch (opcaoMenu) {
+
+                                case 1:
+                                    System.out.println("1 - Ver meus Agendamentos");
+                                    System.out.println("2 - Fazer novo agendamento");
+                                    System.out.println("3 - Remover agendamento pendente");
+                                    System.out.println("4 - Voltar");
+                                    opcaoAgendamento = sc.nextInt();
+                                    sc.nextLine();
+
+                                    switch (opcaoAgendamento) {
+                                        case 1:
+
+                                    }
+
+                            }
+                        } while (opcaoAgendamento != 4);
+
+                    } while (opcaomenu != 3);
 
                 } else {
                     System.out.println("Erro ao conectar ao banco de dados.");

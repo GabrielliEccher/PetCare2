@@ -3,6 +3,7 @@ package model.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class CRUD implements IUsuarioDAO{
 
@@ -91,5 +92,37 @@ public class CRUD implements IUsuarioDAO{
         }
         return false;
     }
+
+    //SERVIÇO
+
+    public ArrayList<Agenda> MostrarAgendamentosPorUsuario(Usuario usuario){
+        String SQL = "SELECT * FROM AGENDA A "+
+        "JOIN SERVICOAGENDA B ON A.CODIGO = B.CODIGOAGENDA "+
+        "JOIN SERVICO C ON B.CODIGOSERVICO = C.CODIGO "+
+        "JOIN PESSOA D ON D.CODIGO = A.CODIGOPESSOA "+
+                "WHERE A.INDICADORATIVO = 1 "+
+                "AND D.LOGIN = " + usuario.getLogin()+
+                " AND D.SENHA = " + usuario.getSenha() +
+                "ORDER BY DATAHORAINICIO";
+
+        ArrayList<Agenda> agenda = new ArrayList<>();
+        try {
+            ResultSet rset = s.executeQuery(SQL);
+
+            while (rset.next()){
+                Agenda a = new Agenda();
+                a.getDatahorafinal(rset.getString("DATAHORAINICIO"));
+                a.getDatahorainicio(rset.getString("DATAHORAFINAL"));
+
+                return  agenda;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null; //deu errado!
+
+
+    }
+
 
 }
